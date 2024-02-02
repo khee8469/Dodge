@@ -1,31 +1,36 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
 
-    private Rigidbody rigid;
-    [SerializeField] float speed;
+    Vector3 vector;
+    public float speed;
+    public float rotateSpeed;
 
-    void Start()
+    private void OnMove(InputValue value)
     {
-        rigid = GetComponent<Rigidbody>();
-        speed = 8;
+        Vector2 input = value.Get<Vector2>();
+        vector.z = input.y;
+        vector.y = input.x;
     }
 
-    
+    private void Move()
+    {
+        transform.Translate(Vector3.forward * vector.z * speed * Time.deltaTime);
+    }
+
+    private void Rotate()
+    {
+        transform.Rotate(Vector3.up * vector.y * rotateSpeed * Time.deltaTime);
+    }
+
     void Update()
     {
-        float xInput = Input.GetAxis("Horizontal");
-        float zInput = Input.GetAxis("Vertical");
-
-        float xSpeed = xInput * speed;
-        float zSpeed = zInput * speed;
-
-        Vector3 newVelocity = new Vector3(xSpeed, 0, zSpeed);
-
-        rigid.velocity = newVelocity;
+        Move();
+        Rotate();
     }
 
     public void Die()
