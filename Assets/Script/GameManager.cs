@@ -2,7 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;  // UI관련 라이브러리
-using UnityEngine.SceneManagement;  // 씬관리 관련 라이브러리
+using UnityEngine.SceneManagement;
+using UnityEngine.InputSystem;  // 씬관리 관련 라이브러리
 
 public class GameManager : MonoBehaviour
 {
@@ -28,10 +29,45 @@ public class GameManager : MonoBehaviour
             surviveTime += Time.deltaTime;
             timeText.text = $"Time: {(int)surviveTime}";
         }
+        else
+        {
+            if (Input.GetKeyDown(KeyCode.R))
+            {
+                SceneManager.LoadScene("SampleScene");
+            }
+        }
     }
+
+    //public void OnRestart(InputValue value)
+    //{
+    //    Debug.Log("?");
+    //    Restart();
+    //}
+
+    //public void Restart()
+    //{
+    //    if (isGameover)
+    //    {
+    //        SceneManager.LoadScene("SampleScene");
+    //    }
+    //}
+
+
+
 
     public void EndGame()
     {
+        isGameover = true;
+        gameoverText.SetActive(true);
 
+        float bestTime = PlayerPrefs.GetFloat("BestTime");
+
+        if(surviveTime> bestTime)
+        {
+            bestTime = surviveTime;
+            PlayerPrefs.SetFloat("BestTime", bestTime);
+        }
+
+        recordText.text = $"Best Time: {(int)bestTime}";
     }
 }
